@@ -9,16 +9,30 @@ class RegisterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: NetworkImage('https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=800'),
-            fit: BoxFit.cover,
-            colorFilter: ColorFilter.mode(Colors.black45, BlendMode.darken),
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          Container(color: const Color(0xFF1C1B1A)),
+          Positioned.fill(
+            child: Image.network(
+              'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=1200&q=80',
+              fit: BoxFit.cover,
+              color: Colors.black.withOpacity(0.45),
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [Color(0xFF1C1B1A), Color(0xFF2C2518)],
+                    ),
+                  ),
+                );
+              },
+            ),
           ),
-        ),
-        child: SafeArea(
-          child: Column(
+          SafeArea(
+            child: Column(
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),

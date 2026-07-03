@@ -37,13 +37,23 @@ class _QRScannerScreenState extends State<QRScannerScreen> with SingleTickerProv
       body: Stack(
         fit: StackFit.expand,
         children: [
-          Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: NetworkImage('https://images.unsplash.com/photo-1585747860019-024de42a4a5c?w=800'),
-                fit: BoxFit.cover,
-                colorFilter: ColorFilter.mode(Colors.black45, BlendMode.darken),
-              ),
+          Container(color: const Color(0xFF1C1B1A)),
+          Positioned.fill(
+            child: Image.network(
+              'https://images.unsplash.com/photo-1585747860019-024de42a4a5c?w=1200&q=80',
+              fit: BoxFit.cover,
+              color: Colors.black.withOpacity(0.6),
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [Color(0xFF1C1B1A), Color(0xFF2C2518)],
+                    ),
+                  ),
+                );
+              },
             ),
           ),
           SafeArea(

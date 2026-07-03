@@ -13,11 +13,44 @@ class OnboardingScreen extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: NetworkImage('https://images.unsplash.com/photo-1585747860019-024de42a4a5c?w=800'),
-                fit: BoxFit.cover,
-                colorFilter: ColorFilter.mode(Colors.black45, BlendMode.darken),
+            color: const Color(0xFF1C1B1A),
+          ),
+          Positioned.fill(
+            child: Image.network(
+              'https://images.unsplash.com/photo-1585747860019-024de42a4a5c?w=1200&q=80',
+              fit: BoxFit.cover,
+              color: Colors.black.withOpacity(0.55),
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Color(0xFF1C1B1A),
+                        Color(0xFF2C2518),
+                        Color(0xFF1C1B1A),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          Positioned.fill(
+            child: Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.transparent,
+                    Colors.transparent,
+                    Colors.black54,
+                    Colors.black87,
+                  ],
+                  stops: [0.0, 0.4, 0.7, 1.0],
+                ),
               ),
             ),
           ),
@@ -40,22 +73,34 @@ class OnboardingScreen extends StatelessWidget {
                   child: Column(
                     children: [
                       Container(
-                        width: 60,
+                        width: 64,
                         height: 1,
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           gradient: LinearGradient(
-                            colors: [Colors.transparent, AppTheme.primaryContainer, Colors.transparent],
+                            colors: [Colors.transparent, AppTheme.primaryFixedDim, Colors.transparent],
                           ),
                         ),
                       ),
                       const SizedBox(height: 32),
                       Text(
-                        'Krallara Layık\nTıraş Seni Bekliyor',
+                        'Krallara Layık',
                         textAlign: TextAlign.center,
                         style: GoogleFonts.libreCaslonText(
                           fontSize: 36,
                           fontWeight: FontWeight.w700,
                           color: Colors.white,
+                          height: 1.2,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Tıraş Seni Bekliyor',
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.libreCaslonText(
+                          fontSize: 36,
+                          fontWeight: FontWeight.w700,
+                          fontStyle: FontStyle.italic,
+                          color: AppTheme.primaryFixedDim,
                           height: 1.2,
                         ),
                       ),
@@ -125,7 +170,8 @@ class OnboardingScreen extends StatelessWidget {
       height: 8,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: active ? AppTheme.primary : Colors.white30,
+        color: active ? AppTheme.primaryFixedDim : Colors.white30,
+        border: active ? Border.all(color: AppTheme.primaryFixedDim, width: 1) : null,
         boxShadow: active ? [BoxShadow(color: AppTheme.primary.withOpacity(0.3), blurRadius: 8)] : null,
       ),
     );

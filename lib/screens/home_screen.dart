@@ -52,13 +52,19 @@ class HomeScreen extends StatelessWidget {
               height: 380,
               child: Stack(
                 children: [
-                  Container(
+                  SizedBox(
                     height: 320,
-                    decoration: const BoxDecoration(
-                      image: DecorationImage(
-                        image: NetworkImage('https://images.unsplash.com/photo-1585747860019-024de42a4a5c?w=800'),
-                        fit: BoxFit.cover,
-                      ),
+                    width: double.infinity,
+                    child: const ColoredBox(color: Color(0xFF1C1B1A)),
+                  ),
+                  Positioned.fill(
+                    child: Image.network(
+                      'https://images.unsplash.com/photo-1585747860019-024de42a4a5c?w=1200&q=80',
+                      fit: BoxFit.cover,
+                      height: 320,
+                      errorBuilder: (context, error, stackTrace) {
+                        return const SizedBox();
+                      },
                     ),
                   ),
                   Positioned(
