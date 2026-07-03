@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
-import 'home_screen.dart';
-import 'appointments_screen.dart';
-import 'profile_screen.dart';
-import 'booking_screen.dart';
+import '../screens/home_screen.dart';
+import '../screens/appointments_screen.dart';
+import '../screens/profile_screen.dart';
+import '../screens/booking_screen.dart';
 
 class BottomNav extends StatelessWidget {
   final int currentIndex;

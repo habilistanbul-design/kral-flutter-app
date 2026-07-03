@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
 import 'home_screen.dart';
 
@@ -58,7 +59,6 @@ class RegisterScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 32),
-                      // Profile photo
                       Stack(
                         children: [
                           Container(
@@ -86,13 +86,10 @@ class RegisterScreen extends StatelessWidget {
                         ],
                       ),
                       const SizedBox(height: 40),
-                      // Name input
                       _buildInput(hint: 'Ad Soyad', icon: Icons.person_outline),
                       const SizedBox(height: 24),
-                      // Phone input
                       _buildInput(hint: 'Telefon Numarası', icon: Icons.phone_outlined),
                       const SizedBox(height: 24),
-                      // Gold thread
                       Container(
                         height: 1,
                         decoration: const BoxDecoration(
@@ -102,7 +99,6 @@ class RegisterScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 24),
-                      // Terms
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -125,7 +121,6 @@ class RegisterScreen extends StatelessWidget {
                         ],
                       ),
                       const SizedBox(height: 24),
-                      // Register button
                       SizedBox(
                         width: double.infinity,
                         height: 56,

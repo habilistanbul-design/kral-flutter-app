@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
 import '../widgets/bottom_nav.dart';
 
@@ -22,16 +23,13 @@ class ProfileScreen extends StatelessWidget {
         padding: const EdgeInsets.all(24),
         child: Column(
           children: [
-            // Profile header
             const CircleAvatar(radius: 60, backgroundImage: NetworkImage('https://i.pravatar.cc/150?img=5')),
             const SizedBox(height: 16),
             Text('Ahmet Yılmaz', style: GoogleFonts.libreCaslonText(fontSize: 28, fontWeight: FontWeight.w600)),
             Text('Kral Deneyimi\'nde 12. randevu', style: GoogleFonts.manrope(color: AppTheme.onSurfaceVariant)),
             const SizedBox(height: 24),
-            // Gold thread
             Container(height: 1, decoration: const BoxDecoration(gradient: LinearGradient(colors: [Colors.transparent, AppTheme.primaryContainer, Colors.transparent]))),
             const SizedBox(height: 24),
-            // Switch barber
             Container(
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
@@ -62,7 +60,6 @@ class ProfileScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
-            // Account info
             _buildSection('Hesap Bilgileri', Icons.person_outline, [
               _buildInfoRow('İsim', 'Ahmet Yılmaz'),
               _buildInfoRow('Telefon', '+90 532 123 45 67'),
@@ -77,7 +74,6 @@ class ProfileScreen extends StatelessWidget {
               ),
             ]),
             const SizedBox(height: 24),
-            // Appointment history
             _buildSection('Randevu Geçmişi', Icons.calendar_month, [
               Container(
                 padding: const EdgeInsets.all(20),
@@ -104,7 +100,6 @@ class ProfileScreen extends StatelessWidget {
               ),
             ]),
             const SizedBox(height: 24),
-            // Support
             _buildSection('Destek', Icons.support_agent, [
               _buildButton('Yardım Merkezi', Icons.help_outline, () {}),
               const SizedBox(height: 12),

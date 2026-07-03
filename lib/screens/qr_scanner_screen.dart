@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
 
 class QRScannerScreen extends StatelessWidget {
@@ -10,7 +11,6 @@ class QRScannerScreen extends StatelessWidget {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          // Background
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
@@ -23,7 +23,6 @@ class QRScannerScreen extends StatelessWidget {
           SafeArea(
             child: Column(
               children: [
-                // Header
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                   child: Row(
@@ -50,7 +49,6 @@ class QRScannerScreen extends StatelessWidget {
                   ),
                 ),
                 const Spacer(),
-                // QR instruction
                 Text(
                   'QR Kodunu Okutun',
                   style: GoogleFonts.libreCaslonText(
@@ -65,18 +63,15 @@ class QRScannerScreen extends StatelessWidget {
                   style: GoogleFonts.manrope(fontSize: 16, color: Colors.white70),
                 ),
                 const SizedBox(height: 40),
-                // QR Frame
                 SizedBox(
                   width: 280,
                   height: 280,
                   child: Stack(
                     children: [
-                      // Corners
                       Positioned(top: 0, left: 0, child: _buildCorner(topLeft: true)),
                       Positioned(top: 0, right: 0, child: _buildCorner(topRight: true)),
                       Positioned(bottom: 0, left: 0, child: _buildCorner(bottomLeft: true)),
                       Positioned(bottom: 0, right: 0, child: _buildCorner(bottomRight: true)),
-                      // Scan area
                       Positioned(
                         top: 16,
                         left: 16,
@@ -87,40 +82,12 @@ class QRScannerScreen extends StatelessWidget {
                             border: Border.all(color: Colors.white24),
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: Stack(
-                              children: [
-                                Container(color: Colors.white.withOpacity(0.05)),
-                                // Animated scan line
-                                TweenAnimationBuilder<double>(
-                                  tween: Tween(begin: 0, end: 1),
-                                  duration: const Duration(seconds: 3),
-                                  builder: (context, value, _) {
-                                    return Positioned(
-                                      top: value * 248,
-                                      left: 0,
-                                      right: 0,
-                                      child: Container(
-                                        height: 2,
-                                        decoration: const BoxDecoration(
-                                          gradient: LinearGradient(colors: [Colors.transparent, AppTheme.primaryFixedDim, Colors.transparent]),
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  onEnd: () {},
-                                ),
-                              ],
-                            ),
-                          ),
                         ),
                       ),
                     ],
                   ),
                 ),
                 const SizedBox(100),
-                // Buttons
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 48),
                   child: Column(

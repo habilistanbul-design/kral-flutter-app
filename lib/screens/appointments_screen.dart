@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
 import '../widgets/bottom_nav.dart';
 
@@ -29,7 +30,6 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
             const SizedBox(height: 4),
             Container(width: 80, height: 1, color: AppTheme.primaryContainer),
             const SizedBox(height: 24),
-            // Tabs
             Row(
               children: [
                 Expanded(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
 import '../data/mock_data.dart';
 import '../widgets/bottom_nav.dart';
@@ -12,7 +13,6 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          // App Bar
           SliverAppBar(
             pinned: true,
             backgroundColor: AppTheme.background,
@@ -35,7 +35,6 @@ class HomeScreen extends StatelessWidget {
               ),
             ],
           ),
-          // Hero
           SliverToBoxAdapter(
             child: SizedBox(
               height: 350,
@@ -100,7 +99,6 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
           ),
-          // Promo banner
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.all(24),
@@ -142,7 +140,6 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
           ),
-          // Upcoming appointment
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -166,10 +163,7 @@ class HomeScreen extends StatelessWidget {
                     const SizedBox(height: 16),
                     Row(
                       children: [
-                        CircleAvatar(
-                          radius: 24,
-                          backgroundImage: NetworkImage(barbers[0].avatarUrl),
-                        ),
+                        CircleAvatar(radius: 24, backgroundImage: NetworkImage(barbers[0].avatarUrl)),
                         const SizedBox(width: 12),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -228,9 +222,7 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
           ),
-          // Gold thread
           const SliverToBoxAdapter(child: Padding(padding: EdgeInsets.symmetric(horizontal: 24, vertical: 24), child: Divider(color: AppTheme.outlineVariant))),
-          // Category chips
           SliverToBoxAdapter(
             child: SizedBox(
               height: 48,
@@ -247,7 +239,6 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
           ),
-          // Barbers header
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
@@ -269,7 +260,6 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
           ),
-          // Barbers list
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (context, index) {

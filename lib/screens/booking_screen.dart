@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
 import '../data/mock_data.dart';
 
@@ -33,7 +34,6 @@ class _BookingScreenState extends State<BookingScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Step 1: Barber
                 _buildStepLabel('Adım 1', 'Berberinizi Seçin'),
                 const SizedBox(height: 16),
                 SizedBox(
@@ -77,10 +77,8 @@ class _BookingScreenState extends State<BookingScreen> {
                   ),
                 ),
                 const SizedBox(height: 24),
-                // Gold thread
                 Container(height: 1, decoration: const BoxDecoration(gradient: LinearGradient(colors: [Colors.transparent, AppTheme.primaryContainer, Colors.transparent]))),
                 const SizedBox(height: 24),
-                // Step 2: Service
                 _buildStepLabel('Adım 2', 'Hizmet Seçimi'),
                 const SizedBox(height: 16),
                 ...services.map((service) {
@@ -116,7 +114,6 @@ class _BookingScreenState extends State<BookingScreen> {
                   );
                 }),
                 const SizedBox(height: 24),
-                // Step 3: Date
                 _buildStepLabel('Adım 3', 'Tarih Seçin'),
                 const SizedBox(height: 16),
                 Container(
@@ -177,7 +174,6 @@ class _BookingScreenState extends State<BookingScreen> {
                   ),
                 ),
                 const SizedBox(height: 24),
-                // Step 4: Time
                 _buildStepLabel('Adım 4', 'Saat Seçin'),
                 const SizedBox(height: 16),
                 GridView.builder(
@@ -212,7 +208,6 @@ class _BookingScreenState extends State<BookingScreen> {
                   },
                 ),
                 const SizedBox(height: 24),
-                // Step 5: Note
                 _buildStepLabel('Adım 5', 'Not Ekle (Opsiyonel)'),
                 const SizedBox(height: 16),
                 TextField(
@@ -229,7 +224,6 @@ class _BookingScreenState extends State<BookingScreen> {
               ],
             ),
           ),
-          // Bottom button
           Positioned(
             bottom: 0,
             left: 0,
@@ -265,7 +259,6 @@ class _BookingScreenState extends State<BookingScreen> {
               ),
             ),
           ),
-          // Toast
           if (showToast)
             Positioned(
               top: 80,
