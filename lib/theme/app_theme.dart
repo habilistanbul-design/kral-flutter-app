@@ -28,6 +28,13 @@ class AppTheme {
 
   static const Color background = Color(0xFFFDF8F6);
 
+  static List<BoxShadow> get luxuryShadow => [
+    BoxShadow(
+      color: primary.withOpacity(0.05),
+      blurRadius: 30,
+    ),
+  ];
+
   static ThemeData get theme => ThemeData(
     useMaterial3: true,
     colorScheme: const ColorScheme.light(

@@ -2,8 +2,34 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
 
-class QRScannerScreen extends StatelessWidget {
+class QRScannerScreen extends StatefulWidget {
   const QRScannerScreen({super.key});
+
+  @override
+  State<QRScannerScreen> createState() => _QRScannerScreenState();
+}
+
+class _QRScannerScreenState extends State<QRScannerScreen> with SingleTickerProviderStateMixin {
+  late AnimationController _lineController;
+  late Animation<double> _lineAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _lineController = AnimationController(
+      duration: const Duration(seconds: 3),
+      vsync: this,
+    )..repeat();
+    _lineAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _lineController, curve: Curves.linear),
+    );
+  }
+
+  @override
+  void dispose() {
+    _lineController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,14 +90,30 @@ class QRScannerScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 40),
                 SizedBox(
-                  width: 280,
-                  height: 280,
+                  width: 288,
+                  height: 288,
                   child: Stack(
                     children: [
-                      Positioned(top: 0, left: 0, child: _buildCorner(topLeft: true)),
-                      Positioned(top: 0, right: 0, child: _buildCorner(topRight: true)),
-                      Positioned(bottom: 0, left: 0, child: _buildCorner(bottomLeft: true)),
-                      Positioned(bottom: 0, right: 0, child: _buildCorner(bottomRight: true)),
+                      Positioned(
+                        top: 0,
+                        left: 0,
+                        child: _buildCorner(topLeft: true),
+                      ),
+                      Positioned(
+                        top: 0,
+                        right: 0,
+                        child: _buildCorner(topRight: true),
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        left: 0,
+                        child: _buildCorner(bottomLeft: true),
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: _buildCorner(bottomRight: true),
+                      ),
                       Positioned(
                         top: 16,
                         left: 16,
@@ -79,15 +121,42 @@ class QRScannerScreen extends StatelessWidget {
                         bottom: 16,
                         child: Container(
                           decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.05),
                             border: Border.all(color: Colors.white24),
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
                       ),
+                      Positioned(
+                        top: 16,
+                        left: 16,
+                        right: 16,
+                        bottom: 16,
+                        child: AnimatedBuilder(
+                          animation: _lineAnimation,
+                          builder: (context, child) {
+                            return CustomPaint(
+                              painter: _ScanLinePainter(
+                                progress: _lineAnimation.value,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
                     ],
                   ),
                 ),
-                const SizedBox(100),
+                const SizedBox(height: 24),
+                Container(
+                  width: 64,
+                  height: 1,
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Colors.transparent, AppTheme.primaryFixedDim, Colors.transparent],
+                    ),
+                  ),
+                ),
+                const Spacer(),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 48),
                   child: Column(
@@ -173,5 +242,33 @@ class QRScannerScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class _ScanLinePainter extends CustomPainter {
+  final double progress;
+  _ScanLinePainter({required this.progress});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..shader = LinearGradient(
+        colors: [
+          AppTheme.primaryFixedDim.withOpacity(0.0),
+          AppTheme.primaryFixedDim,
+          AppTheme.primaryFixedDim.withOpacity(0.0),
+        ],
+      ).createShader(Rect.fromLTWH(0, 0, size.width, 2));
+
+    final y = progress * size.height;
+    canvas.drawRect(
+      Rect.fromLTWH(0, y, size.width, 2),
+      paint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _ScanLinePainter oldDelegate) {
+    return oldDelegate.progress != progress;
   }
 }

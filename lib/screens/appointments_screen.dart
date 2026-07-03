@@ -30,47 +30,63 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
             const SizedBox(height: 4),
             Container(width: 80, height: 1, color: AppTheme.primaryContainer),
             const SizedBox(height: 24),
-            Row(
-              children: [
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () => setState(() => showActive = true),
-                    child: Container(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      decoration: BoxDecoration(
-                        border: Border(bottom: BorderSide(color: showActive ? AppTheme.primaryContainer : Colors.transparent, width: 2)),
-                      ),
-                      child: Text(
-                        'Aktif Randevular',
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.manrope(
-                          fontWeight: FontWeight.w600,
-                          color: showActive ? AppTheme.primary : AppTheme.onSurfaceVariant,
+            Container(
+              decoration: BoxDecoration(
+                color: AppTheme.surfaceContainerHigh,
+                borderRadius: BorderRadius.circular(24),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => setState(() => showActive = true),
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        decoration: BoxDecoration(
+                          color: showActive ? AppTheme.surfaceContainerLowest : Colors.transparent,
+                          borderRadius: BorderRadius.circular(24),
+                          boxShadow: showActive
+                              ? [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10)]
+                              : null,
+                        ),
+                        child: Text(
+                          'Aktif Randevular',
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.manrope(
+                            fontWeight: FontWeight.w600,
+                            color: showActive ? AppTheme.primary : AppTheme.onSurfaceVariant,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () => setState(() => showActive = false),
-                    child: Container(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      decoration: BoxDecoration(
-                        border: Border(bottom: BorderSide(color: !showActive ? AppTheme.primaryContainer : Colors.transparent, width: 2)),
-                      ),
-                      child: Text(
-                        'Geçmiş Randevular',
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.manrope(
-                          fontWeight: FontWeight.w600,
-                          color: !showActive ? AppTheme.primary : AppTheme.onSurfaceVariant,
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => setState(() => showActive = false),
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        decoration: BoxDecoration(
+                          color: !showActive ? AppTheme.surfaceContainerLowest : Colors.transparent,
+                          borderRadius: BorderRadius.circular(24),
+                          boxShadow: !showActive
+                              ? [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10)]
+                              : null,
+                        ),
+                        child: Text(
+                          'Geçmiş Randevular',
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.manrope(
+                            fontWeight: FontWeight.w600,
+                            color: !showActive ? AppTheme.primary : AppTheme.onSurfaceVariant,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             const SizedBox(height: 24),
             Expanded(
@@ -88,9 +104,10 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: AppTheme.surfaceContainerLowest,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: AppTheme.outlineVariant.withOpacity(0.2)),
-        boxShadow: [BoxShadow(color: AppTheme.primary.withOpacity(0.05), blurRadius: 30)],
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(color: AppTheme.primary.withOpacity(0.05), blurRadius: 30),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -100,7 +117,7 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
               decoration: BoxDecoration(
-                color: AppTheme.primary.withOpacity(0.05),
+                color: AppTheme.primaryFixedDim.withOpacity(0.08),
                 borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(12)),
               ),
               child: Text('GELECEK', style: GoogleFonts.manrope(fontSize: 11, fontWeight: FontWeight.w600, color: AppTheme.primary, letterSpacing: 2)),
@@ -134,9 +151,10 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
           ),
           const SizedBox(height: 16),
           Container(
+            width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
-              color: AppTheme.primaryContainer.withOpacity(0.05),
+              color: AppTheme.primaryFixedDim.withOpacity(0.08),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Row(
@@ -154,7 +172,10 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
               Expanded(
                 child: OutlinedButton(
                   onPressed: () {},
-                  style: OutlinedButton.styleFrom(side: const BorderSide(color: AppTheme.onSurface)),
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: AppTheme.onSurface),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  ),
                   child: Text('İPTAL ET', style: GoogleFonts.manrope(color: AppTheme.onSurface, letterSpacing: 2)),
                 ),
               ),
@@ -162,7 +183,11 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
               Expanded(
                 child: ElevatedButton(
                   onPressed: () {},
-                  style: ElevatedButton.styleFrom(backgroundColor: AppTheme.primaryContainer, foregroundColor: AppTheme.onPrimaryContainer),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppTheme.primaryContainer,
+                    foregroundColor: AppTheme.onPrimaryContainer,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  ),
                   child: Text('ERTELE', style: GoogleFonts.manrope(letterSpacing: 2)),
                 ),
               ),
@@ -174,28 +199,38 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
   }
 
   Widget _buildPastAppointments() {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: AppTheme.surfaceContainerLowest,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: AppTheme.outlineVariant.withOpacity(0.1)),
-      ),
-      child: Row(
-        children: [
-          const CircleAvatar(radius: 24, backgroundImage: NetworkImage('https://i.pravatar.cc/150?img=3')),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+    return Opacity(
+      opacity: 0.8,
+      child: Container(
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: AppTheme.surfaceContainerLowest,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: AppTheme.outlineVariant.withOpacity(0.1)),
+        ),
+        child: Row(
+          children: [
+            const CircleAvatar(radius: 24, backgroundImage: NetworkImage('https://i.pravatar.cc/150?img=3')),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Mehmet Demir', style: GoogleFonts.libreCaslonText(fontSize: 16, fontWeight: FontWeight.w600)),
+                  Text('Sakal Tıraşı & Bakım', style: GoogleFonts.manrope(fontSize: 12, color: AppTheme.onSurfaceVariant)),
+                ],
+              ),
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text('Mehmet Demir', style: GoogleFonts.manrope(fontWeight: FontWeight.w600)),
-                Text('Sakal Tıraşı & Bakım', style: GoogleFonts.manrope(fontSize: 12, color: AppTheme.onSurfaceVariant)),
+                Text('12 Mayıs', style: GoogleFonts.manrope(fontSize: 12, color: AppTheme.onSurfaceVariant)),
+                const SizedBox(height: 4),
+                const Icon(Icons.star, size: 16, color: AppTheme.primaryFixedDim),
               ],
             ),
-          ),
-          Text('12 Mayıs', style: GoogleFonts.manrope(fontSize: 12, color: AppTheme.onSurfaceVariant)),
-        ],
+          ],
+        ),
       ),
     );
   }

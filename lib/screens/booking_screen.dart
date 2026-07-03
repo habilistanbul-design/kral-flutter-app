@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
 import '../data/mock_data.dart';
+import '../widgets/bottom_nav.dart';
 
 class BookingScreen extends StatefulWidget {
   const BookingScreen({super.key});
@@ -14,6 +15,7 @@ class _BookingScreenState extends State<BookingScreen> {
   String? selectedBarber = 'b1';
   String? selectedService = 's1';
   String? selectedTime = '10:00';
+  DateTime selectedDate = DateTime.now();
   final noteController = TextEditingController();
   bool showToast = false;
 
@@ -26,6 +28,8 @@ class _BookingScreenState extends State<BookingScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text('Randevu Al', style: GoogleFonts.libreCaslonText(fontSize: 24, fontWeight: FontWeight.w600)),
+        backgroundColor: AppTheme.surface,
+        surfaceTintColor: Colors.transparent,
       ),
       body: Stack(
         children: [
@@ -46,12 +50,14 @@ class _BookingScreenState extends State<BookingScreen> {
                       final isSelected = selectedBarber == barber.id;
                       return GestureDetector(
                         onTap: () => setState(() => selectedBarber = barber.id),
-                        child: Container(
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
                           width: 150,
                           margin: const EdgeInsets.only(right: 16),
                           padding: const EdgeInsets.all(16),
+                          transform: isSelected ? (Matrix4.identity()..translate(0.0, -2.0)) : Matrix4.identity(),
                           decoration: BoxDecoration(
-                            color: isSelected ? AppTheme.primary.withOpacity(0.05) : AppTheme.surfaceContainerLowest,
+                            color: isSelected ? AppTheme.primaryFixedDim.withOpacity(0.05) : AppTheme.surfaceContainerLowest,
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
                               color: isSelected ? AppTheme.primaryContainer : AppTheme.outlineVariant.withOpacity(0.2),
@@ -77,7 +83,7 @@ class _BookingScreenState extends State<BookingScreen> {
                   ),
                 ),
                 const SizedBox(height: 24),
-                Container(height: 1, decoration: const BoxDecoration(gradient: LinearGradient(colors: [Colors.transparent, AppTheme.primaryContainer, Colors.transparent]))),
+                const _GoldThread(),
                 const SizedBox(height: 24),
                 _buildStepLabel('Adım 2', 'Hizmet Seçimi'),
                 const SizedBox(height: 16),
@@ -85,11 +91,12 @@ class _BookingScreenState extends State<BookingScreen> {
                   final isSelected = selectedService == service.id;
                   return GestureDetector(
                     onTap: () => setState(() => selectedService = service.id),
-                    child: Container(
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
                       margin: const EdgeInsets.only(bottom: 12),
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        color: isSelected ? AppTheme.primary.withOpacity(0.05) : AppTheme.surfaceContainerLowest,
+                        color: isSelected ? AppTheme.primaryFixedDim.withOpacity(0.05) : AppTheme.surfaceContainerLowest,
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
                           color: isSelected ? AppTheme.primaryContainer : AppTheme.outlineVariant.withOpacity(0.2),
@@ -121,21 +128,47 @@ class _BookingScreenState extends State<BookingScreen> {
                   decoration: BoxDecoration(
                     color: AppTheme.surfaceContainerLowest,
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: AppTheme.outlineVariant.withOpacity(0.2)),
+                    boxShadow: [
+                      BoxShadow(color: AppTheme.primary.withOpacity(0.05), blurRadius: 30),
+                    ],
                   ),
                   child: Column(
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Ekim 2023', style: GoogleFonts.manrope(fontWeight: FontWeight.w600)),
+                          Text(_getMonthName(selectedDate.month), style: GoogleFonts.manrope(fontWeight: FontWeight.w600)),
                           Row(
                             children: [
-                              IconButton(onPressed: () {}, icon: const Icon(Icons.chevron_left)),
-                              IconButton(onPressed: () {}, icon: const Icon(Icons.chevron_right)),
+                              IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    selectedDate = DateTime(selectedDate.year, selectedDate.month - 1);
+                                  });
+                                },
+                                icon: const Icon(Icons.chevron_left),
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    selectedDate = DateTime(selectedDate.year, selectedDate.month + 1);
+                                  });
+                                },
+                                icon: const Icon(Icons.chevron_right),
+                              ),
                             ],
                           ),
                         ],
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'].map((d) {
+                          return Expanded(
+                            child: Center(
+                              child: Text(d, style: GoogleFonts.manrope(fontSize: 12, fontWeight: FontWeight.w500, color: AppTheme.onSurfaceVariant)),
+                            ),
+                          );
+                        }).toList(),
                       ),
                       const SizedBox(height: 8),
                       GridView.count(
@@ -145,23 +178,35 @@ class _BookingScreenState extends State<BookingScreen> {
                         children: List.generate(35, (index) {
                           final day = index - 4;
                           if (day < 1 || day > 31) return const SizedBox();
-                          final isSelected = day == 4;
+                          final isToday = day == selectedDate.day;
+                          final isPast = day < DateTime.now().day && selectedDate.month == DateTime.now().month;
                           return Center(
                             child: GestureDetector(
-                              onTap: () {},
+                              onTap: isPast ? null : () {
+                                setState(() {
+                                  selectedDate = DateTime(selectedDate.year, selectedDate.month, day);
+                                });
+                              },
                               child: Container(
                                 width: 36,
                                 height: 36,
                                 decoration: BoxDecoration(
-                                  color: isSelected ? AppTheme.primary : null,
+                                  color: isToday ? AppTheme.primary : null,
                                   borderRadius: BorderRadius.circular(8),
+                                  boxShadow: isToday
+                                      ? [BoxShadow(color: AppTheme.primary.withOpacity(0.3), blurRadius: 8)]
+                                      : null,
                                 ),
                                 child: Center(
                                   child: Text(
                                     '$day',
                                     style: GoogleFonts.manrope(
                                       fontWeight: FontWeight.w500,
-                                      color: isSelected ? Colors.white : AppTheme.onSurface,
+                                      color: isPast
+                                          ? AppTheme.onSurfaceVariant.withOpacity(0.3)
+                                          : isToday
+                                              ? Colors.white
+                                              : AppTheme.onSurface,
                                     ),
                                   ),
                                 ),
@@ -186,12 +231,17 @@ class _BookingScreenState extends State<BookingScreen> {
                     final isSelected = selectedTime == slot.time;
                     return GestureDetector(
                       onTap: slot.available ? () => setState(() => selectedTime = slot.time) : null,
-                      child: Container(
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
                         decoration: BoxDecoration(
-                          color: !slot.available ? AppTheme.surfaceContainer : (isSelected ? AppTheme.primary.withOpacity(0.1) : null),
+                          color: !slot.available
+                              ? AppTheme.surfaceContainer
+                              : (isSelected ? AppTheme.primaryFixedDim.withOpacity(0.1) : null),
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(
-                            color: isSelected ? AppTheme.primary : AppTheme.outlineVariant.withOpacity(0.2),
+                            color: isSelected
+                                ? AppTheme.primary
+                                : AppTheme.outlineVariant.withOpacity(0.2),
                           ),
                         ),
                         child: Center(
@@ -199,7 +249,9 @@ class _BookingScreenState extends State<BookingScreen> {
                             slot.time,
                             style: GoogleFonts.manrope(
                               fontWeight: FontWeight.w600,
-                              color: !slot.available ? AppTheme.onSurfaceVariant.withOpacity(0.3) : (isSelected ? AppTheme.primary : AppTheme.onSurface),
+                              color: !slot.available
+                                  ? AppTheme.onSurfaceVariant.withOpacity(0.3)
+                                  : (isSelected ? AppTheme.primary : AppTheme.onSurface),
                             ),
                           ),
                         ),
@@ -250,9 +302,9 @@ class _BookingScreenState extends State<BookingScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('Randevuyu Onayla', style: GoogleFonts.manrope(fontWeight: FontWeight.w600)),
-                      const SizedBox(width: 8),
                       const Icon(Icons.check_circle, size: 20),
+                      const SizedBox(width: 8),
+                      Text('Randevuyu Onayla', style: GoogleFonts.manrope(fontWeight: FontWeight.w600)),
                     ],
                   ),
                 ),
@@ -277,6 +329,7 @@ class _BookingScreenState extends State<BookingScreen> {
             ),
         ],
       ),
+      bottomNavigationBar: const BottomNav(currentIndex: 1),
     );
   }
 
@@ -288,6 +341,27 @@ class _BookingScreenState extends State<BookingScreen> {
         const SizedBox(height: 8),
         Text(title, style: GoogleFonts.libreCaslonText(fontSize: 28, fontWeight: FontWeight.w600)),
       ],
+    );
+  }
+
+  String _getMonthName(int month) {
+    const months = ['', 'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
+    return '${months[month]} ${selectedDate.year}';
+  }
+}
+
+class _GoldThread extends StatelessWidget {
+  const _GoldThread();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 1,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Colors.transparent, AppTheme.primaryContainer, Colors.transparent],
+        ),
+      ),
     );
   }
 }
