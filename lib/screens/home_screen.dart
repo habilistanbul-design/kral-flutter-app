@@ -155,7 +155,7 @@ class HomeScreen extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        const Icon(Icons.event_upcoming, size: 16, color: AppTheme.primary),
+                        const Icon(Icons.event, size: 16, color: AppTheme.primary),
                         const SizedBox(width: 8),
                         Text('YAKLAŞAN RANDEVUNUZ', style: GoogleFonts.manrope(fontSize: 14, fontWeight: FontWeight.w600, letterSpacing: 2)),
                       ],
