@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
 import '../widgets/bottom_nav.dart';
+import 'register_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -106,7 +107,13 @@ class ProfileScreen extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton.icon(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (_) => const RegisterScreen()),
+                      (route) => false,
+                    );
+                  },
                   icon: const Icon(Icons.logout, color: AppTheme.error),
                   label: Text('ÇIKIŞ YAP', style: GoogleFonts.manrope(color: AppTheme.error, fontWeight: FontWeight.w600, letterSpacing: 2)),
                   style: OutlinedButton.styleFrom(
