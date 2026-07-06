@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
 import 'register_screen.dart';
+import 'barber_login_screen.dart';
 
 class OnboardingScreen extends StatelessWidget {
   const OnboardingScreen({super.key});
@@ -12,9 +13,7 @@ class OnboardingScreen extends StatelessWidget {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          Container(
-            color: const Color(0xFF1C1B1A),
-          ),
+          Container(color: const Color(0xFF1C1B1A)),
           Positioned.fill(
             child: Image.network(
               'https://images.unsplash.com/photo-1585747860019-024de42a4a5c?w=1200&q=80',
@@ -26,11 +25,7 @@ class OnboardingScreen extends StatelessWidget {
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
-                      colors: [
-                        Color(0xFF1C1B1A),
-                        Color(0xFF2C2518),
-                        Color(0xFF1C1B1A),
-                      ],
+                      colors: [Color(0xFF1C1B1A), Color(0xFF2C2518), Color(0xFF1C1B1A)],
                     ),
                   ),
                 );
@@ -43,12 +38,7 @@ class OnboardingScreen extends StatelessWidget {
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.transparent,
-                    Colors.transparent,
-                    Colors.black54,
-                    Colors.black87,
-                  ],
+                  colors: [Colors.transparent, Colors.transparent, Colors.black54, Colors.black87],
                   stops: [0.0, 0.4, 0.7, 1.0],
                 ),
               ),
@@ -104,7 +94,7 @@ class OnboardingScreen extends StatelessWidget {
                           height: 1.2,
                         ),
                       ),
-                      const SizedBox(height: 40),
+                      const SizedBox(height: 48),
                       SizedBox(
                         width: double.infinity,
                         height: 56,
@@ -121,7 +111,7 @@ class OnboardingScreen extends StatelessWidget {
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
                           ),
                           child: Text(
-                            'KAYIT OL',
+                            'MÜŞTERİ GİRİŞİ',
                             style: GoogleFonts.manrope(
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
@@ -130,10 +120,43 @@ class OnboardingScreen extends StatelessWidget {
                           ),
                         ),
                       ),
+                      const SizedBox(height: 16),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 56,
+                        child: OutlinedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => const BarberLoginScreen()),
+                            );
+                          },
+                          style: OutlinedButton.styleFrom(
+                            side: const BorderSide(color: AppTheme.primaryFixedDim, width: 1.5),
+                            foregroundColor: AppTheme.primaryFixedDim,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(Icons.content_cut, size: 18),
+                              const SizedBox(width: 8),
+                              Text(
+                                'BERBER GİRİŞİ',
+                                style: GoogleFonts.manrope(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 3,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 60),
+                const SizedBox(height: 40),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -147,11 +170,7 @@ class OnboardingScreen extends StatelessWidget {
                 const SizedBox(height: 20),
                 Text(
                   'Aşağı Kaydır',
-                  style: GoogleFonts.manrope(
-                    fontSize: 12,
-                    color: Colors.white54,
-                    letterSpacing: 1,
-                  ),
+                  style: GoogleFonts.manrope(fontSize: 12, color: Colors.white54, letterSpacing: 1),
                 ),
                 const SizedBox(height: 8),
                 const Icon(Icons.expand_more, color: AppTheme.primaryFixedDim, size: 28),

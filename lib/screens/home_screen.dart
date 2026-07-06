@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
-import '../data/mock_data.dart';
+import '../services/firestore_service.dart';
 import '../widgets/bottom_nav.dart';
 import 'booking_screen.dart';
 
@@ -10,6 +10,8 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final firestore = FirestoreService();
+
     return Scaffold(
       floatingActionButton: Container(
         width: 56,
@@ -77,10 +79,7 @@ class HomeScreen extends StatelessWidget {
                         gradient: LinearGradient(
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
-                          colors: [
-                            Colors.transparent,
-                            AppTheme.surface,
-                          ],
+                          colors: [Colors.transparent, AppTheme.surface],
                         ),
                       ),
                     ),
@@ -97,12 +96,7 @@ class HomeScreen extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(12),
-                            boxShadow: [
-                              BoxShadow(
-                                color: AppTheme.primary.withOpacity(0.08),
-                                blurRadius: 30,
-                              ),
-                            ],
+                            boxShadow: [BoxShadow(color: AppTheme.primary.withOpacity(0.08), blurRadius: 30)],
                           ),
                           padding: const EdgeInsets.all(8),
                           child: Container(
@@ -120,18 +114,30 @@ class HomeScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(width: 16),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text('Kral Barbershop', style: GoogleFonts.libreCaslonText(fontSize: 24, fontWeight: FontWeight.w600)),
-                            Row(
+                        StreamBuilder<SalonProfile?>(
+                          stream: firestore.getSalonProfile(),
+                          builder: (context, snapshot) {
+                            final salon = snapshot.data;
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
                               children: [
-                                const Icon(Icons.location_on, size: 14, color: AppTheme.onSurfaceVariant),
-                                Text(' Nişantaşı, İstanbul', style: GoogleFonts.manrope(color: AppTheme.onSurfaceVariant)),
+                                Text(
+                                  salon?.name ?? 'Kral Barbershop',
+                                  style: GoogleFonts.libreCaslonText(fontSize: 24, fontWeight: FontWeight.w600),
+                                ),
+                                Row(
+                                  children: [
+                                    const Icon(Icons.location_on, size: 14, color: AppTheme.onSurfaceVariant),
+                                    Text(
+                                      salon?.address ?? 'Nişantaşı, İstanbul',
+                                      style: GoogleFonts.manrope(color: AppTheme.onSurfaceVariant),
+                                    ),
+                                  ],
+                                ),
                               ],
-                            ),
-                          ],
+                            );
+                          },
                         ),
                       ],
                     ),
@@ -148,12 +154,7 @@ class HomeScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: AppTheme.surfaceContainerLow,
                   borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppTheme.primary.withOpacity(0.05),
-                      blurRadius: 30,
-                    ),
-                  ],
+                  boxShadow: [BoxShadow(color: AppTheme.primary.withOpacity(0.05), blurRadius: 30)],
                 ),
                 child: Stack(
                   children: [
@@ -204,112 +205,7 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
           ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Container(
-                padding: const EdgeInsets.all(24),
-                decoration: BoxDecoration(
-                  color: AppTheme.surfaceContainerHigh,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        const Icon(Icons.event, size: 16, color: AppTheme.primary),
-                        const SizedBox(width: 8),
-                        Text('YAKLAŞAN RANDEVUNUZ', style: GoogleFonts.manrope(fontSize: 14, fontWeight: FontWeight.w600, letterSpacing: 2)),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        CircleAvatar(radius: 24, backgroundImage: NetworkImage(barbers[0].avatarUrl)),
-                        const SizedBox(width: 12),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(barbers[0].name, style: GoogleFonts.libreCaslonText(fontSize: 20, fontWeight: FontWeight.w600)),
-                            Text('Saç Kesimi & Stil', style: GoogleFonts.manrope(fontSize: 12, color: AppTheme.onSurfaceVariant)),
-                          ],
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    Row(
-                      children: [
-                        const Icon(Icons.schedule, size: 14, color: AppTheme.onSurfaceVariant),
-                        Text(' Yarın, 14:30', style: GoogleFonts.manrope(fontWeight: FontWeight.bold)),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      decoration: BoxDecoration(
-                        color: AppTheme.primaryFixedDim.withOpacity(0.08),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(Icons.timer, size: 16, color: AppTheme.primary),
-                          const SizedBox(width: 8),
-                          Text('1 Gün 5 Saat Kaldı', style: GoogleFonts.manrope(fontWeight: FontWeight.w600, color: AppTheme.primary)),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: OutlinedButton(
-                            onPressed: () {},
-                            style: OutlinedButton.styleFrom(
-                              side: const BorderSide(color: AppTheme.onSurface),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                            ),
-                            child: Text('İPTAL ET', style: GoogleFonts.manrope(color: AppTheme.onSurface, letterSpacing: 2)),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: ElevatedButton(
-                            onPressed: () {},
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppTheme.primaryContainer,
-                              foregroundColor: AppTheme.onPrimaryContainer,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                            ),
-                            child: Text('ERTELE', style: GoogleFonts.manrope(letterSpacing: 2)),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
           const SliverToBoxAdapter(child: _GoldThread()),
-          SliverToBoxAdapter(
-            child: SizedBox(
-              height: 48,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                children: [
-                  _buildChip('TÜMÜ', true),
-                  _buildChip('Saç Kesimi', false),
-                  _buildChip('Sakal Tasarımı', false),
-                  _buildChip('Cilt Bakımı', false),
-                  _buildChip('Kral Paketi', false),
-                ],
-              ),
-            ),
-          ),
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
@@ -331,91 +227,98 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
           ),
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            sliver: SliverGrid(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                mainAxisSpacing: 12,
-                crossAxisSpacing: 12,
-                childAspectRatio: 0.75,
-              ),
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  final barber = barbers[index];
-                  return Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppTheme.primary.withOpacity(0.05),
-                          blurRadius: 30,
+          StreamBuilder<List<Barber>>(
+            stream: firestore.getBarbers(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const SliverToBoxAdapter(
+                  child: Center(child: Padding(
+                    padding: EdgeInsets.all(40),
+                    child: CircularProgressIndicator(color: AppTheme.primary),
+                  )),
+                );
+              }
+              final barbers = snapshot.data ?? [];
+              if (barbers.isEmpty) {
+                return const SliverToBoxAdapter(
+                  child: Center(child: Padding(
+                    padding: EdgeInsets.all(40),
+                    child: Text('Henüz berber bulunmuyor'),
+                  )),
+                );
+              }
+              return SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                sliver: SliverGrid(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    mainAxisSpacing: 12,
+                    crossAxisSpacing: 12,
+                    childAspectRatio: 0.75,
+                  ),
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      final barber = barbers[index];
+                      return Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [BoxShadow(color: AppTheme.primary.withOpacity(0.05), blurRadius: 30)],
                         ),
-                      ],
-                    ),
-                    child: Column(
-                      children: [
-                        Stack(
+                        child: Column(
                           children: [
-                            CircleAvatar(
-                              radius: 28,
-                              backgroundImage: NetworkImage(barber.avatarUrl),
-                              backgroundColor: AppTheme.surfaceContainerLow,
-                            ),
-                            Positioned(
-                              bottom: 0,
-                              right: 0,
-                              child: Container(
-                                padding: const EdgeInsets.all(2),
-                                decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-                                child: Container(
-                                  padding: const EdgeInsets.all(3),
-                                  decoration: const BoxDecoration(color: AppTheme.primary, shape: BoxShape.circle),
-                                  child: const Icon(Icons.star, size: 8, color: Colors.white),
+                            Stack(
+                              children: [
+                                CircleAvatar(
+                                  radius: 28,
+                                  backgroundImage: NetworkImage(barber.avatarUrl),
+                                  backgroundColor: AppTheme.surfaceContainerLow,
                                 ),
+                                Positioned(
+                                  bottom: 0,
+                                  right: 0,
+                                  child: Container(
+                                    padding: const EdgeInsets.all(2),
+                                    decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+                                    child: Container(
+                                      padding: const EdgeInsets.all(3),
+                                      decoration: const BoxDecoration(color: AppTheme.primary, shape: BoxShape.circle),
+                                      child: const Icon(Icons.star, size: 8, color: Colors.white),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 8),
+                            Text(barber.name, style: GoogleFonts.libreCaslonText(fontSize: 14, fontWeight: FontWeight.w600), textAlign: TextAlign.center, maxLines: 1, overflow: TextOverflow.ellipsis),
+                            Text(barber.expertise.toUpperCase(), style: GoogleFonts.manrope(fontSize: 9, color: AppTheme.onSurfaceVariant, letterSpacing: 1), textAlign: TextAlign.center, maxLines: 1, overflow: TextOverflow.ellipsis),
+                            const Spacer(),
+                            SizedBox(
+                              width: double.infinity,
+                              height: 32,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  Navigator.push(context, MaterialPageRoute(builder: (_) => const BookingScreen()));
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppTheme.error,
+                                  foregroundColor: Colors.white,
+                                  padding: EdgeInsets.zero,
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                                ),
+                                child: Text('Randevu Al', style: GoogleFonts.manrope(fontWeight: FontWeight.w600, fontSize: 11)),
                               ),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 8),
-                        Text(
-                          barber.name,
-                          style: GoogleFonts.libreCaslonText(fontSize: 14, fontWeight: FontWeight.w600),
-                          textAlign: TextAlign.center,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        Text(
-                          barber.title.toUpperCase(),
-                          style: GoogleFonts.manrope(fontSize: 9, color: AppTheme.onSurfaceVariant, letterSpacing: 1),
-                          textAlign: TextAlign.center,
-                        ),
-                        const Spacer(),
-                        SizedBox(
-                          width: double.infinity,
-                          height: 32,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (_) => const BookingScreen()));
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppTheme.error,
-                              foregroundColor: Colors.white,
-                              padding: EdgeInsets.zero,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                            ),
-                            child: Text('Randevu Al', style: GoogleFonts.manrope(fontWeight: FontWeight.w600, fontSize: 11)),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-                childCount: barbers.length,
-              ),
-            ),
+                      );
+                    },
+                    childCount: barbers.length,
+                  ),
+                ),
+              );
+            },
           ),
           const SliverToBoxAdapter(child: _GoldThread()),
           SliverToBoxAdapter(
@@ -447,33 +350,20 @@ class HomeScreen extends StatelessWidget {
                     child: Stack(
                       fit: StackFit.expand,
                       children: [
-                        Image.network(
-                          'https://i.pravatar.cc/400?img=${10 + index * 3}',
-                          fit: BoxFit.cover,
-                        ),
+                        Image.network('https://i.pravatar.cc/400?img=${10 + index * 3}', fit: BoxFit.cover),
                         Container(
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               begin: Alignment.topCenter,
                               end: Alignment.bottomCenter,
-                              colors: [
-                                Colors.transparent,
-                                Colors.black.withOpacity(0.6),
-                              ],
+                              colors: [Colors.transparent, Colors.black.withOpacity(0.6)],
                             ),
                           ),
                         ),
                         Positioned(
                           bottom: 12,
                           left: 12,
-                          child: Text(
-                            titles[index],
-                            style: GoogleFonts.manrope(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
-                            ),
-                          ),
+                          child: Text(titles[index], style: GoogleFonts.manrope(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white)),
                         ),
                       ],
                     ),
@@ -489,22 +379,6 @@ class HomeScreen extends StatelessWidget {
       bottomNavigationBar: const BottomNav(currentIndex: 0),
     );
   }
-
-  static Widget _buildChip(String label, bool selected) {
-    return Container(
-      margin: const EdgeInsets.only(right: 8),
-      child: ElevatedButton(
-        onPressed: () {},
-        style: ElevatedButton.styleFrom(
-          backgroundColor: selected ? AppTheme.primary : AppTheme.surfaceContainerHigh,
-          foregroundColor: selected ? AppTheme.onPrimary : AppTheme.onSurfaceVariant,
-          side: selected ? null : const BorderSide(color: AppTheme.outlineVariant),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        ),
-        child: Text(label, style: GoogleFonts.manrope(fontWeight: FontWeight.w600)),
-      ),
-    );
-  }
 }
 
 class _GoldThread extends StatelessWidget {
@@ -517,9 +391,7 @@ class _GoldThread extends StatelessWidget {
       child: Container(
         height: 1,
         decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.transparent, AppTheme.primaryContainer, Colors.transparent],
-          ),
+          gradient: LinearGradient(colors: [Colors.transparent, AppTheme.primaryContainer, Colors.transparent]),
         ),
       ),
     );
