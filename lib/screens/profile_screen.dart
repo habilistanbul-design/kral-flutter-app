@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../theme/app_theme.dart';
 import '../widgets/bottom_nav.dart';
-import 'register_screen.dart';
+import 'onboarding_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
+    final displayName = user?.displayName ?? 'Kullanıcı';
+    final email = user?.email ?? '';
+    final phone = user?.phoneNumber ?? '';
+
     return Scaffold(
       appBar: AppBar(
         leading: const Icon(Icons.menu),
@@ -16,7 +22,17 @@ class ProfileScreen extends StatelessWidget {
         actions: [
           Container(
             margin: const EdgeInsets.only(right: 16),
-            child: const CircleAvatar(radius: 18, backgroundImage: NetworkImage('https://i.pravatar.cc/150?img=5')),
+            child: CircleAvatar(
+              radius: 18,
+              backgroundImage: user?.photoURL != null ? NetworkImage(user!.photoURL!) : null,
+              backgroundColor: AppTheme.primaryContainer,
+              child: user?.photoURL == null
+                  ? Text(
+                      displayName[0].toUpperCase(),
+                      style: GoogleFonts.manrope(color: Colors.white, fontWeight: FontWeight.w600),
+                    )
+                  : null,
+            ),
           ),
         ],
       ),
@@ -24,79 +40,43 @@ class ProfileScreen extends StatelessWidget {
         padding: const EdgeInsets.all(24),
         child: Column(
           children: [
-            const CircleAvatar(radius: 60, backgroundImage: NetworkImage('https://i.pravatar.cc/150?img=5')),
+            CircleAvatar(
+              radius: 60,
+              backgroundImage: user?.photoURL != null ? NetworkImage(user!.photoURL!) : null,
+              backgroundColor: AppTheme.primaryContainer,
+              child: user?.photoURL == null
+                  ? Text(
+                      displayName[0].toUpperCase(),
+                      style: GoogleFonts.libreCaslonText(fontSize: 36, color: Colors.white),
+                    )
+                  : null,
+            ),
             const SizedBox(height: 16),
-            Text('Ahmet Yılmaz', style: GoogleFonts.libreCaslonText(fontSize: 28, fontWeight: FontWeight.w600)),
-            Text('Kral Deneyimi\'nde 12. randevu', style: GoogleFonts.manrope(color: AppTheme.onSurfaceVariant)),
-            const SizedBox(height: 24),
-            Container(height: 1, decoration: const BoxDecoration(gradient: LinearGradient(colors: [Colors.transparent, AppTheme.primaryContainer, Colors.transparent]))),
+            Text(displayName, style: GoogleFonts.libreCaslonText(fontSize: 28, fontWeight: FontWeight.w600)),
+            Text(email, style: GoogleFonts.manrope(color: AppTheme.onSurfaceVariant)),
             const SizedBox(height: 24),
             Container(
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: AppTheme.surfaceContainerLowest,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppTheme.primary.withOpacity(0.2)),
-                boxShadow: [BoxShadow(color: AppTheme.primary.withOpacity(0.05), blurRadius: 30)],
-              ),
-              child: Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(color: AppTheme.primaryFixed, borderRadius: BorderRadius.circular(8)),
-                    child: const Icon(Icons.swap_horiz, color: AppTheme.primary),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Kuaför Değiştir', style: GoogleFonts.libreCaslonText(fontSize: 20, fontWeight: FontWeight.w600)),
-                        Text('QR kodu tarayarak veya listeden seçerek', style: GoogleFonts.manrope(fontSize: 14, color: AppTheme.onSurfaceVariant)),
-                      ],
-                    ),
-                  ),
-                  const Icon(Icons.chevron_right, color: AppTheme.primary),
-                ],
+              height: 1,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(colors: [Colors.transparent, AppTheme.primaryContainer, Colors.transparent]),
               ),
             ),
             const SizedBox(height: 24),
             _buildSection('Hesap Bilgileri', Icons.person_outline, [
-              _buildInfoRow('İsim', 'Ahmet Yılmaz'),
-              _buildInfoRow('Telefon', '+90 532 123 45 67'),
+              _buildInfoRow('İsim', displayName),
+              _buildInfoRow('E-posta', email),
+              _buildInfoRow('Telefon', phone.isNotEmpty ? phone : 'Belirtilmemiş'),
               const SizedBox(height: 16),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {},
-                  style: ElevatedButton.styleFrom(backgroundColor: AppTheme.primary, foregroundColor: AppTheme.onPrimary, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28))),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppTheme.primary,
+                    foregroundColor: AppTheme.onPrimary,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+                  ),
                   child: Text('Profili Kaydet', style: GoogleFonts.manrope(fontWeight: FontWeight.w600, letterSpacing: 2)),
-                ),
-              ),
-            ]),
-            const SizedBox(height: 24),
-            _buildSection('Randevu Geçmişi', Icons.calendar_month, [
-              Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(border: Border.all(color: AppTheme.outlineVariant), borderRadius: BorderRadius.circular(8)),
-                child: Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(color: AppTheme.primaryFixed, borderRadius: BorderRadius.circular(8)),
-                      child: const Icon(Icons.content_cut, color: AppTheme.primary),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Kral Deneyimi', style: GoogleFonts.libreCaslonText(fontSize: 18, fontWeight: FontWeight.w600)),
-                          Text('12 Eylül, 14:30 • Berber Ali', style: GoogleFonts.manrope(fontSize: 14, color: AppTheme.onSurfaceVariant)),
-                        ],
-                      ),
-                    ),
-                  ],
                 ),
               ),
             ]),
@@ -107,12 +87,15 @@ class ProfileScreen extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton.icon(
-                  onPressed: () {
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (_) => const RegisterScreen()),
-                      (route) => false,
-                    );
+                  onPressed: () async {
+                    await FirebaseAuth.instance.signOut();
+                    if (context.mounted) {
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (_) => const OnboardingScreen()),
+                        (route) => false,
+                      );
+                    }
                   },
                   icon: const Icon(Icons.logout, color: AppTheme.error),
                   label: Text('ÇIKIŞ YAP', style: GoogleFonts.manrope(color: AppTheme.error, fontWeight: FontWeight.w600, letterSpacing: 2)),

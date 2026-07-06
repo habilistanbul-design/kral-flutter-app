@@ -3,31 +3,24 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../theme/app_theme.dart';
 import 'home_screen.dart';
-import 'login_screen.dart';
+import 'register_screen.dart';
 
-class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
-  final _nameController = TextEditingController();
+class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
-  final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
-  bool _acceptedTerms = false;
   bool _loading = false;
   String? _error;
 
-  Future<void> _register() async {
-    if (_nameController.text.isEmpty || _emailController.text.isEmpty || _passwordController.text.isEmpty) {
-      setState(() => _error = 'Tüm alanları doldurun');
-      return;
-    }
-    if (!_acceptedTerms) {
-      setState(() => _error = 'Kullanım koşullarını kabul edin');
+  Future<void> _login() async {
+    if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
+      setState(() => _error = 'E-posta ve şifre girin');
       return;
     }
     setState(() {
@@ -35,11 +28,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
       _error = null;
     });
     try {
-      final cred = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text,
       );
-      await cred.user?.updateDisplayName(_nameController.text.trim());
       if (mounted) {
         Navigator.pushReplacement(
           context,
@@ -49,12 +41,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
     } on FirebaseAuthException catch (e) {
       setState(() {
         _loading = false;
-        if (e.code == 'weak-password') {
-          _error = 'Şifre çok zayıf';
-        } else if (e.code == 'email-already-in-use') {
-          _error = 'Bu e-posta zaten kullanımda';
+        if (e.code == 'user-not-found') {
+          _error = 'Bu e-posta ile kayıt bulunamadı';
+        } else if (e.code == 'wrong-password') {
+          _error = 'Şifre hatalı';
         } else {
-          _error = 'Kayıt başarısız: ${e.message}';
+          _error = 'Giriş başarısız: ${e.message}';
         }
       });
     } catch (e) {
@@ -121,65 +113,49 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: Column(
                       children: [
-                        const SizedBox(height: 16),
-                        Text(
-                          'Zanaatkar bir dokunuş için\nilk adımı atın.',
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.manrope(
-                            fontSize: 16,
-                            color: Colors.white70,
-                            height: 1.5,
-                          ),
-                        ),
                         const SizedBox(height: 40),
-                        _buildInput(controller: _nameController, hint: 'Ad Soyad', icon: Icons.person_outline),
-                        const SizedBox(height: 24),
-                        _buildInput(controller: _emailController, hint: 'E-posta', icon: Icons.email_outlined, keyboardType: TextInputType.emailAddress),
-                        const SizedBox(height: 24),
-                        _buildInput(controller: _phoneController, hint: 'Telefon Numarası', icon: Icons.phone_outlined, keyboardType: TextInputType.phone),
-                        const SizedBox(height: 24),
-                        _buildInput(controller: _passwordController, hint: 'Şifre', icon: Icons.lock_outline, obscure: true),
-                        const SizedBox(height: 24),
-                        Container(
-                          height: 1,
-                          decoration: const BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [Colors.transparent, AppTheme.primaryContainer, Colors.transparent],
-                            ),
+                        Text(
+                          'Tekrar Hoş Geldiniz',
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.libreCaslonText(
+                            fontSize: 28,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
                           ),
                         ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Hesabınıza giriş yapın',
+                          style: GoogleFonts.manrope(fontSize: 16, color: Colors.white70),
+                        ),
+                        const SizedBox(height: 48),
+                        _buildInput(
+                          controller: _emailController,
+                          hint: 'E-posta',
+                          icon: Icons.email_outlined,
+                          keyboardType: TextInputType.emailAddress,
+                        ),
                         const SizedBox(height: 24),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Checkbox(
-                              value: _acceptedTerms,
-                              onChanged: (v) => setState(() => _acceptedTerms = v ?? false),
-                              activeColor: AppTheme.primary,
-                              side: const BorderSide(color: AppTheme.outlineVariant),
-                            ),
-                            Expanded(
-                              child: Text(
-                                'Kullanım koşulları ve KVKK metnini okudum, kabul ediyorum.',
-                                style: GoogleFonts.manrope(fontSize: 12, color: Colors.white, height: 1.4),
-                              ),
-                            ),
-                          ],
+                        _buildInput(
+                          controller: _passwordController,
+                          hint: 'Şifre',
+                          icon: Icons.lock_outline,
+                          obscure: true,
                         ),
                         if (_error != null) ...[
-                          const SizedBox(height: 8),
+                          const SizedBox(height: 16),
                           Text(
                             _error!,
                             style: GoogleFonts.manrope(color: AppTheme.error, fontSize: 14),
                             textAlign: TextAlign.center,
                           ),
                         ],
-                        const SizedBox(height: 24),
+                        const SizedBox(height: 40),
                         SizedBox(
                           width: double.infinity,
                           height: 56,
                           child: ElevatedButton(
-                            onPressed: _loading ? null : _register,
+                            onPressed: _loading ? null : _login,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppTheme.error,
                               foregroundColor: Colors.white,
@@ -192,20 +168,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     height: 24,
                                     child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
                                   )
-                                : Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        'KAYIT OL',
-                                        style: GoogleFonts.manrope(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w600,
-                                          letterSpacing: 3,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 8),
-                                      const Icon(Icons.arrow_forward, size: 18),
-                                    ],
+                                : Text(
+                                    'GİRİŞ YAP',
+                                    style: GoogleFonts.manrope(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      letterSpacing: 3,
+                                    ),
                                   ),
                           ),
                         ),
@@ -214,16 +183,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           onPressed: () {
                             Navigator.pushReplacement(
                               context,
-                              MaterialPageRoute(builder: (_) => const LoginScreen()),
+                              MaterialPageRoute(builder: (_) => const RegisterScreen()),
                             );
                           },
                           child: Text.rich(
                             TextSpan(
-                              text: 'Zaten üye misiniz? ',
+                              text: 'Hesabınız yok mu? ',
                               style: GoogleFonts.manrope(color: Colors.white),
                               children: [
                                 TextSpan(
-                                  text: 'Giriş Yap',
+                                  text: 'Kayıt Ol',
                                   style: GoogleFonts.manrope(
                                     color: AppTheme.primary,
                                     fontWeight: FontWeight.bold,

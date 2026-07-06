@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../theme/app_theme.dart';
+import '../services/firestore_service.dart';
 import '../widgets/bottom_nav.dart';
 
 class AppointmentsScreen extends StatefulWidget {
@@ -15,11 +17,26 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
+
     return Scaffold(
       appBar: AppBar(
         leading: const Icon(Icons.menu),
         title: Text('KRAL', style: GoogleFonts.libreCaslonText(fontSize: 32, fontWeight: FontWeight.w700, letterSpacing: 6, color: AppTheme.primary)),
-        actions: const [CircleAvatar(radius: 14, backgroundImage: NetworkImage('https://i.pravatar.cc/150?img=5'))],
+        actions: [
+          CircleAvatar(
+            radius: 14,
+            backgroundImage: user?.photoURL != null
+                ? NetworkImage(user!.photoURL!)
+                : null,
+            child: user?.photoURL == null
+                ? Text(
+                    (user?.displayName ?? 'M')[0].toUpperCase(),
+                    style: GoogleFonts.manrope(fontSize: 12, color: Colors.white),
+                  )
+                : null,
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(24),
@@ -46,18 +63,9 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
                         decoration: BoxDecoration(
                           color: showActive ? AppTheme.surfaceContainerLowest : Colors.transparent,
                           borderRadius: BorderRadius.circular(24),
-                          boxShadow: showActive
-                              ? [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10)]
-                              : null,
+                          boxShadow: showActive ? [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10)] : null,
                         ),
-                        child: Text(
-                          'Aktif Randevular',
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.manrope(
-                            fontWeight: FontWeight.w600,
-                            color: showActive ? AppTheme.primary : AppTheme.onSurfaceVariant,
-                          ),
-                        ),
+                        child: Text('Aktif Randevular', textAlign: TextAlign.center, style: GoogleFonts.manrope(fontWeight: FontWeight.w600, color: showActive ? AppTheme.primary : AppTheme.onSurfaceVariant)),
                       ),
                     ),
                   ),
@@ -70,18 +78,9 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
                         decoration: BoxDecoration(
                           color: !showActive ? AppTheme.surfaceContainerLowest : Colors.transparent,
                           borderRadius: BorderRadius.circular(24),
-                          boxShadow: !showActive
-                              ? [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10)]
-                              : null,
+                          boxShadow: !showActive ? [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10)] : null,
                         ),
-                        child: Text(
-                          'Geçmiş Randevular',
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.manrope(
-                            fontWeight: FontWeight.w600,
-                            color: !showActive ? AppTheme.primary : AppTheme.onSurfaceVariant,
-                          ),
-                        ),
+                        child: Text('Geçmiş Randevular', textAlign: TextAlign.center, style: GoogleFonts.manrope(fontWeight: FontWeight.w600, color: !showActive ? AppTheme.primary : AppTheme.onSurfaceVariant)),
                       ),
                     ),
                   ),
@@ -90,7 +89,7 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
             ),
             const SizedBox(height: 24),
             Expanded(
-              child: showActive ? _buildActiveAppointment() : _buildPastAppointments(),
+              child: showActive ? _buildActiveAppointments() : _buildPastAppointments(),
             ),
           ],
         ),
@@ -99,136 +98,37 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
     );
   }
 
-  Widget _buildActiveAppointment() {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: AppTheme.surfaceContainerLowest,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(color: AppTheme.primary.withOpacity(0.05), blurRadius: 30),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Align(
-            alignment: Alignment.topRight,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-              decoration: BoxDecoration(
-                color: AppTheme.primaryFixedDim.withOpacity(0.08),
-                borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(12)),
-              ),
-              child: Text('GELECEK', style: GoogleFonts.manrope(fontSize: 11, fontWeight: FontWeight.w600, color: AppTheme.primary, letterSpacing: 2)),
+  Widget _buildActiveAppointments() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(40),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.event_available, size: 48, color: AppTheme.outlineVariant),
+            const SizedBox(height: 16),
+            Text('Yaklaşan randevunuz yok', style: GoogleFonts.manrope(color: AppTheme.onSurfaceVariant)),
+            const SizedBox(height: 16),
+            TextButton(
+              onPressed: () => Navigator.pushReplacementNamed(context, '/'),
+              child: Text('Randevu Al', style: GoogleFonts.manrope(color: AppTheme.primary, fontWeight: FontWeight.w600)),
             ),
-          ),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              const CircleAvatar(radius: 28, backgroundImage: NetworkImage('https://i.pravatar.cc/150?img=1')),
-              const SizedBox(width: 16),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Ahmet Yılmaz', style: GoogleFonts.libreCaslonText(fontSize: 20, fontWeight: FontWeight.w600)),
-                  Text('Saç Kesimi & Stil', style: GoogleFonts.manrope(color: AppTheme.onSurfaceVariant)),
-                ],
-              ),
-            ],
-          ),
-          const SizedBox(height: 24),
-          Row(
-            children: [
-              const Icon(Icons.calendar_today, size: 16, color: AppTheme.primaryContainer),
-              const SizedBox(width: 8),
-              Text('20 Mayıs 2024', style: GoogleFonts.manrope(fontWeight: FontWeight.w600)),
-              const SizedBox(width: 24),
-              const Icon(Icons.schedule, size: 16, color: AppTheme.primaryContainer),
-              const SizedBox(width: 8),
-              Text('14:30', style: GoogleFonts.manrope(fontWeight: FontWeight.w600)),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            decoration: BoxDecoration(
-              color: AppTheme.primaryFixedDim.withOpacity(0.08),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.timer, size: 16, color: AppTheme.primary),
-                const SizedBox(width: 8),
-                Text('1 Gün 5 Saat Kaldı', style: GoogleFonts.manrope(fontWeight: FontWeight.w600, color: AppTheme.primary)),
-              ],
-            ),
-          ),
-          const SizedBox(height: 24),
-          Row(
-            children: [
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: () {},
-                  style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: AppTheme.onSurface),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                  ),
-                  child: Text('İPTAL ET', style: GoogleFonts.manrope(color: AppTheme.onSurface, letterSpacing: 2)),
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppTheme.primaryContainer,
-                    foregroundColor: AppTheme.onPrimaryContainer,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                  ),
-                  child: Text('ERTELE', style: GoogleFonts.manrope(letterSpacing: 2)),
-                ),
-              ),
-            ],
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildPastAppointments() {
-    return Opacity(
-      opacity: 0.8,
-      child: Container(
-        padding: const EdgeInsets.all(24),
-        decoration: BoxDecoration(
-          color: AppTheme.surfaceContainerLowest,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppTheme.outlineVariant.withOpacity(0.1)),
-        ),
-        child: Row(
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(40),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const CircleAvatar(radius: 24, backgroundImage: NetworkImage('https://i.pravatar.cc/150?img=3')),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Mehmet Demir', style: GoogleFonts.libreCaslonText(fontSize: 16, fontWeight: FontWeight.w600)),
-                  Text('Sakal Tıraşı & Bakım', style: GoogleFonts.manrope(fontSize: 12, color: AppTheme.onSurfaceVariant)),
-                ],
-              ),
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text('12 Mayıs', style: GoogleFonts.manrope(fontSize: 12, color: AppTheme.onSurfaceVariant)),
-                const SizedBox(height: 4),
-                const Icon(Icons.star, size: 16, color: AppTheme.primaryFixedDim),
-              ],
-            ),
+            Icon(Icons.history, size: 48, color: AppTheme.outlineVariant),
+            const SizedBox(height: 16),
+            Text('Geçmiş randevu bulunmuyor', style: GoogleFonts.manrope(color: AppTheme.onSurfaceVariant)),
           ],
         ),
       ),

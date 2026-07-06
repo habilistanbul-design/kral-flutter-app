@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
 import 'register_screen.dart';
-import 'barber_login_screen.dart';
+import 'login_screen.dart';
 
 class OnboardingScreen extends StatelessWidget {
   const OnboardingScreen({super.key});
@@ -111,7 +111,7 @@ class OnboardingScreen extends StatelessWidget {
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
                           ),
                           child: Text(
-                            'MÜŞTERİ GİRİŞİ',
+                            'KAYIT OL',
                             style: GoogleFonts.manrope(
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
@@ -128,7 +128,7 @@ class OnboardingScreen extends StatelessWidget {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (_) => const BarberLoginScreen()),
+                              MaterialPageRoute(builder: (_) => const LoginScreen()),
                             );
                           },
                           style: OutlinedButton.styleFrom(
@@ -136,20 +136,13 @@ class OnboardingScreen extends StatelessWidget {
                             foregroundColor: AppTheme.primaryFixedDim,
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
                           ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(Icons.content_cut, size: 18),
-                              const SizedBox(width: 8),
-                              Text(
-                                'BERBER GİRİŞİ',
-                                style: GoogleFonts.manrope(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 3,
-                                ),
-                              ),
-                            ],
+                          child: Text(
+                            'GİRİŞ YAP',
+                            style: GoogleFonts.manrope(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 3,
+                            ),
                           ),
                         ),
                       ),
